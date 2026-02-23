@@ -152,8 +152,8 @@ def run_insurance_engine(query, custom_format=None):
         "summary_spec": {
             "summary_result_count": 10, # 提高數量以支持 A/B 比較
             "include_citations": True,
+            "ignore_adversarial_query": True,
             "model_prompt_spec": {"preamble": strict_instruction},
-            "summary_model_verbosity": "LONG"
         }
     }
 

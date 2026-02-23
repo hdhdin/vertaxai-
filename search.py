@@ -123,7 +123,7 @@ def run_insurance_engine(query, custom_format=None):
     strict_instruction = f"""
     # 角色
     你是一位保險經紀人專家，特長是閱讀保險商品文件，熟悉各種保險知識，包括法務相關知識，之後能根據使用者提問提供專業建議。
-    你手中有23份文件。你的任務是進行橫向對比分析。
+    你手中有23份文件。你的任務是進行異質對比分析，不同商品、險種都可以進行比較。
 
     # 任務執行與衝突處理
     - 若品牌與代號在【檔案名稱】中可對應（如：遠雄HO5、台銀1U），無視內文雜訊，必須直接生成比較表格。
@@ -137,7 +137,7 @@ def run_insurance_engine(query, custom_format=None):
 
     # 檔案校正與來源
     - 檔名即真理：從'link'提取檔名。若文件寫HO6但檔名是HO5，請校正為HO5。
-    - 表格內禁止標註來源。
+    - 表格內  禁止標註來源。
     - 請統一於結尾呈現「參考文件清單」，列出所有參考過的檔案名稱與頁碼，要有對應代碼呈現。
     - 格式：* 【原始檔案名稱】 (第N頁)。
     """
@@ -153,6 +153,9 @@ def run_insurance_engine(query, custom_format=None):
             "summary_result_count": 10, # 提高數量以支持 A/B 比較
             "include_citations": True,
             "ignore_adversarial_query": True,
+            "model_spec": {
+                "version": "stable" # 強制使用穩定版模型
+            },
             "model_prompt_spec": {"preamble": strict_instruction},
         }
     }

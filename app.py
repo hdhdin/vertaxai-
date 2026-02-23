@@ -1,7 +1,8 @@
 import streamlit as st
 import re
-from config import  DATA_STORE_ID
 from search import run_insurance_engine, super_clean_response ,get_data_store_stats,list_all_documents # 請確保檔名正確
+
+DATA_STORE_ID = st.secrets["DATA_STORE_ID"]
 
 # --- 頁面配置 ---
 st.set_page_config(page_title="AI 保險合規審查助手", layout="wide", page_icon="⚖️")

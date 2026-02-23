@@ -23,13 +23,13 @@ def list_all_documents():
     """專為無結構 Data Store 設計的檔案清單抓取"""
     try:
         
-        client= get_clients()
+        _, doc_client = get_clients()
         
         # 使用 default_branch
         parent = f"projects/{PROJECT_ID}/locations/{LOCATION}/dataStores/{DATA_STORE_ID}/branches/default_branch"
         
         request = discoveryengine.ListDocumentsRequest(parent=parent, page_size=100)
-        page_result = client.list_documents(request=request)
+        page_result = doc_client.list_documents(request=request)
         
         file_names = []
         for doc in page_result:
@@ -58,14 +58,14 @@ def get_data_store_stats():
     """動態獲取 Data Store 中的文件總數"""
     try:
         # 建立 DocumentServiceClient
-        client = get_clients()
+        _, doc_client = get_clients()
         
         # Data Store 的完整路徑
         parent = f"projects/{PROJECT_ID}/locations/{LOCATION}/dataStores/{DATA_STORE_ID}/branches/0"
         
         # 獲取文件列表並計算總數 (Vertex AI Search API)
         request = discoveryengine.ListDocumentsRequest(parent=parent, page_size=100)
-        page = client.list_documents(request=request)
+        page = doc_client.list_documents(request=request)
         
         # 計算總數
         count = sum(1 for _ in page)
@@ -118,7 +118,7 @@ def super_clean_response(ai_text, search_results):
     return final_text
 
 def run_insurance_engine(query, custom_format=None):
-    client = get_clients()
+    search_client , _ = get_clients()
     # --- 這是你要求的：嚴格限制與比較邏輯 ---
     strict_instruction = f"""
     # 角色
@@ -142,7 +142,7 @@ def run_insurance_engine(query, custom_format=None):
     - 格式：* 【原始檔案名稱】 (第N頁)。
     """
 
-    serving_config = client.serving_config_path(
+    serving_config = search_client.serving_config_path(
         project=PROJECT_ID, location=LOCATION, 
         data_store=DATA_STORE_ID, serving_config="default_search"
     )
@@ -162,7 +162,7 @@ def run_insurance_engine(query, custom_format=None):
         content_search_spec=content_search_spec
     )
 
-    response = client.search(request)
+    response = search_client.search(request)
     summary_text = response.summary.summary_text if response.summary else "搜尋失敗"
     return summary_text, response.results
 

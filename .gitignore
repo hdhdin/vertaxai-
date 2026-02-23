@@ -1,0 +1,5 @@
+.env
+aiteams.json
+__pycache__/
+*.pyc
+.streamlit/
